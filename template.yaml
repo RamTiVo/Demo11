@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Lambda application that calls the Lambda API.
+Resources:
+  MyFirstSamLocalLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: demo.FirstLambdaHandler::handleRequest
+      Runtime: java11
+      CodeUri: target/lambda.zip
+      Description: Call the AWS Lambda API
+      Timeout: 30
+      MemorySize: 512
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+      Tracing: Active
+
+  Api:
+    Description: API Gateway for Test
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: src/main/resources/api.yaml

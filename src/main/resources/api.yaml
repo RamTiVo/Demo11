@@ -1,0 +1,21 @@
+openapi: "3.0.1"
+info:
+  title: "test-api-gw"
+  version: "1.0"
+servers:
+  - url: /
+paths:
+  /my-rest-api:
+    post:
+      summary: Test method
+      description: Create a new Enrollment record and redirects the browser to the redirectUrl
+      #      security:
+      #        - api_key: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:MyFirstSamLocalLambdaFunction/invocations
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+      responses:
+        '200':
+          description: "200 response"
